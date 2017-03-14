@@ -1,0 +1,135 @@
+<html><head>
+<title>egkerreader</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=0.4, user-scalable=1">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="manifest" href="data:application/json;charset=utf-8;base64,ew0KICAibmFtZSI6ICJlZ2tlcnJlYWRlciIsDQogICJzdGFydF91cmwiOiAicmVhZGVyLmh0bWwiLA0KICAiZGlzcGxheSI6ICJmdWxsc2NyZWVuIiwNCiAgInRoZW1lX2NvbG9yIjogIndoaXRlIiwNCiAgImJhY2tncm91bmRfY29sb3IiOiAid2hpdGUiDQp9">
+
+<style>
+.layer {
+    border-top: 2px solid rgb(200,200,200);
+}
+
+.layerOpen {
+    border-top: none;
+}
+
+
+.lineContainer {
+    position: relative;
+}
+
+.lineButton {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 80px;
+}
+
+body {
+    margin: 0px;
+    padding-bottom: 500px;
+    background: rgb(230, 230, 203);
+    background-image: url(image.jpg);
+}
+
+
+
+</style>
+<script src="data.js"></script>
+<script>
+var touch = false;
+//var layerMarkWidth = 5;
+//var maxDepth = 4;
+
+window.addEventListener('DOMContentLoaded', function() {
+	loadContent(document.getElementById("top"),data,0);
+});
+
+function loadContent(elem,content,depth)
+{
+	for(i in content)
+	{
+        if (typeof content[i] == "number") {
+            var img = document.createElement("img");
+            var date = new Date(content[i]);
+            img.src="images/"+content[i]+".egker";
+            //img.style.marginLeft = (maxDepth - depth) * layerMarkWidth;
+            img.style.borderLeft = "10px solid rgba(0,0,0," + (depth * 0.15) + ")";
+            elem.appendChild(img);
+            elem.appendChild(document.createElement("br"));
+        } else {
+            var lineContainer = document.createElement("div");
+            var lineButton = document.createElement("div");
+            var layer = document.createElement("div");
+            lineContainer.className = "lineContainer";
+            lineButton.className = "lineButton";
+            layer.className = "layer";
+            //layer.style.borderLeft = layerMarkWidth + "px solid black";
+			lineButton.addEventListener(touch ? 'touchend' : 'click',getClickListenerButton(layer,content[i],depth + 1));
+            layer.addEventListener(touch ? 'touchend' : 'click',getClickListenerLayer(layer,content[i],depth + 1));
+			layer.dataset.loaded=0;
+            lineContainer.appendChild(lineButton);
+            elem.appendChild(lineContainer);
+            elem.appendChild(layer);
+        }
+	}
+}
+
+function getClickListenerButton(elem,content,depth)
+{
+	return function(e) {
+		if(elem.dataset.loaded==0)
+		{
+            elem.className = "layerOpen";
+			loadContent(elem,content,depth);
+			elem.dataset.loaded=1;
+		}
+		else
+		{
+			while (elem.firstChild) {
+				elem.removeChild(elem.firstChild);
+			}
+			elem.dataset.loaded=0;
+            elem.className = "layer";
+		}
+	}
+}
+
+function getClickListenerLayer(elem,content,depth)
+{
+	return function(e) {
+        //if (e.target != this)return;
+        e.stopPropagation();
+        var pageX = touch ? e.changedTouches[0].pageX : e.pageX;
+        var pageY = touch ? e.changedTouches[0].pageY : e.pageY;
+        if (pageX-elem.offsetLeft >= 40)return;
+		if(elem.dataset.loaded==0)
+		{
+            elem.className = "layerOpen";
+			loadContent(elem,content,depth);
+			elem.dataset.loaded=1;
+		}
+		else
+		{
+            if (elem.offsetHeight - pageY + elem.offsetTop <= 200) {
+                window.scrollBy(0,-elem.offsetHeight + 2);
+            } else {
+                window.scrollBy(0,-(pageY-elem.offsetTop));
+            }
+            
+			while (elem.firstChild) {
+				elem.removeChild(elem.firstChild);
+			}
+			elem.dataset.loaded=0;
+            elem.className = "layer";
+		}
+	}
+}
+
+
+</script>
+</head>
+<body>
+<div id="top"></div>
+</body></html>

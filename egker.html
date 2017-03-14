@@ -1,0 +1,33 @@
+﻿<html>
+<head>
+<title>egker</title>
+<link rel="icon" type="image/png" href="icon.png">
+</head>
+<body>
+
+<label>
+  <input type="checkbox" id="debugMode">
+  debug mode
+</label>
+
+<progress id="progress" value="0" max="1" style="display:none"></progress> 
+
+<div id="log"></div>
+
+<div id="finish" style="display:none">
+  <hr>
+  <div id="imgLog"></div>
+  <input type="button" id="complete" value="OK">
+</div>
+
+<script src="fields.js"></script>
+<script src="data.js"></script>
+<script src="js/markup.js"></script>
+<script src="js/imgproc.js"></script>
+<script src="js/noteproc.js"></script>
+<script src="js/main.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.min.js"></script>
+
+</body>
+</html>
